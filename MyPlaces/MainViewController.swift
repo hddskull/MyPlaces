@@ -30,13 +30,24 @@ class MainViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-
+        
+        //присваиваем ячейке имя из массива названий
         cell.textLabel?.text = restaurantNames[indexPath.row]
+        //присваиваем строке картинку по названию изображения
         cell.imageView?.image = UIImage(named: restaurantNames[indexPath.row])
+        //обрезаем imageView в круг, присваивая ему половину высоты ячейки, тк размер картинки зависит от высоты строки
+        cell.imageView?.layer.cornerRadius = cell.frame.size.height / 2
+        //привязываем изображение к обрезанному view
+        cell.imageView?.clipsToBounds = true
 
         return cell
     }
     
+    // MARK: - Table View delegate
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 85
+    }
 
     /*
     // MARK: - Navigation
