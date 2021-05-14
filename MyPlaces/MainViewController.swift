@@ -10,7 +10,7 @@ import UIKit
 class MainViewController: UITableViewController {
     
     
-    let places = Place.getPlaces()
+    var places = Place.getPlaces()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,11 +29,22 @@ class MainViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! CustomTableViewCell
         
         //присваиваем ячейке имя из массива названий
-        cell.nameLabel?.text = places[indexPath.row].name
-        cell.locationLabel?.text = places[indexPath.row].location
-        cell.typeLabel?.text = places[indexPath.row].type
-        //присваиваем строке картинку по названию изображения
-        cell.imageOfPlaces?.image = UIImage(named: places[indexPath.row].image)
+        
+        let place = places[indexPath.row]
+        
+        cell.nameLabel?.text = place.name
+        cell.locationLabel?.text = place.location
+        cell.typeLabel?.text = place.type
+        
+        if  place.image == nil {
+            
+            //присваиваем строке картинку по названию изображения
+            cell.imageOfPlaces?.image = UIImage(named: place.restaurantImage!)
+            
+        } else {
+            cell.imageOfPlaces.image = place.image
+        }
+        
         //обрезаем imageView в круг, присваивая ему половину высоты ячейки, тк размер картинки зависит от высоты строки
         cell.imageOfPlaces?.layer.cornerRadius = cell.imageOfPlaces.frame.size.height / 2
         //привязываем изображение к обрезанному view
@@ -53,5 +64,11 @@ class MainViewController: UITableViewController {
     }
     */
     
-    @IBAction func cancelAction(_ segue: UIStoryboardSegue) {}
+    @IBAction func unwindSegue(_ segue: UIStoryboardSegue) {
+        guard let newPlaceVC = segue.source as? NewPlaceViewController else { return }
+        
+        newPlaceVC.saveNewPlace()
+        places.append(newPlaceVC.newPlace!)
+        tableView.reloadData()
+    }
 }
