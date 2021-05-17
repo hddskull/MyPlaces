@@ -23,11 +23,7 @@ class NewPlaceViewController:
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        DispatchQueue.main.async {
-            
-            self.newPlace.savePlaces()
-        }
-        
+  
         tableView.tableFooterView = UIView()
         
         saveButton.isEnabled = false
@@ -71,7 +67,7 @@ class NewPlaceViewController:
     }
      
     func saveNewPlace() {
-        
+                
         var image: UIImage?
         
         if imageIsChanged {
@@ -80,15 +76,16 @@ class NewPlaceViewController:
             image = #imageLiteral(resourceName: "imagePlaceholder")
         }
         
-//        newPlace = Place(name: placeName.text!,
-//                         location: placeLocation.text,
-//                         type: placeType.text,
-//                         image: image,
-//                         restaurantImage: nil)
-//    
-     }
+        let imageData = image?.pngData()
+        
+        let newPlace = Place(name: placeName.text!,
+                             location: placeLocation.text,
+                             type: placeType.text,
+                             imageData: imageData)
     
-    
+        storageManager.saveObject(newPlace)
+        
+    }
     @IBAction func cancelAction(_ sender: Any) {
         dismiss(animated: true)
     }
