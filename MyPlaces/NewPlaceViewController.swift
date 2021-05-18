@@ -7,10 +7,10 @@
 
 import UIKit
 
-class NewPlaceViewController:
+class NewPlaceViewController: UITableViewController {
+    // переменная где будут храниться данные по определенной ячейки
+    var currentPlace: Place?
     
-    
-    UITableViewController {
     var newPlace = Place()
     var imageIsChanged = false
 
@@ -29,6 +29,7 @@ class NewPlaceViewController:
         saveButton.isEnabled = false
         //метод для отслеживания поля на изменения, в селекторе используется кастомный метод для проверки поля на наличие символа
         placeName.addTarget(self, action: #selector(textFieldChanged), for: .editingChanged)
+        setupEditScreen()
 
     }
 
@@ -66,7 +67,7 @@ class NewPlaceViewController:
         }
     }
      
-    func saveNewPlace() {
+    func savePlace() {
                 
         var image: UIImage?
         
@@ -82,10 +83,52 @@ class NewPlaceViewController:
                              location: placeLocation.text,
                              type: placeType.text,
                              imageData: imageData)
-    
-        storageManager.saveObject(newPlace)
+        // если текущий объект есть, то это экран редактирования и нужно присваивать данные полученные из аутлетов
+        if currentPlace != nil {
+            try! realm.write {
+                currentPlace?.name = newPlace.name
+                currentPlace?.type = newPlace.location
+                currentPlace?.location = newPlace.type
+                currentPlace?.imageData = newPlace.imageData
+            }
+        } else {
+            // если объекта места нет, то создаем новый
+            storageManager.saveObject(newPlace)
+        }
         
     }
+    
+    private func setupEditScreen(){
+        // проверка на то что ячейка тыкнутая не nil
+        if currentPlace != nil {
+            
+            setupNavigationBar()
+            // чтобы изображение при редактировании не сбрасывалось, то нужно указать что изобр изменено, что не подставилось дефолтное
+            imageIsChanged = true
+            
+            // проверяем что из переменой извлекается дата по изображению и присваеваем переменной image изображение собранное из data
+            guard let data = currentPlace?.imageData, let image = UIImage(data: data) else { return }
+            
+            // присваеваем outlet'ам данные из переменной и изображение
+            placeImage.image = image
+            placeImage.contentMode = .scaleAspectFill
+            placeName.text = currentPlace?.name
+            placeType.text = currentPlace?.type
+            placeLocation.text = currentPlace?.location
+        }
+    }
+    
+    private func setupNavigationBar() {
+        // меняем навзвание кнопки с My places на просто стрелку (подставляем пустую строку)
+        if let topItem = navigationController?.navigationBar.topItem {
+            topItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        }
+        // меняем заголовок на ресторанный, кнопку сохр вкл, меняет левую кнопку на дефолтную назад
+        navigationItem.leftBarButtonItem = nil
+        title = currentPlace?.name
+        saveButton.isEnabled = true
+    }
+    
     @IBAction func cancelAction(_ sender: Any) {
         dismiss(animated: true)
     }
