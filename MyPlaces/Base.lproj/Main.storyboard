@@ -212,6 +212,9 @@
                                     <segment title="Date"/>
                                     <segment title="Name"/>
                                 </segments>
+                                <connections>
+                                    <action selector="sortSelection:" destination="0BO-a4-o3G" eventType="valueChanged" id="SRK-1p-iuO"/>
+                                </connections>
                             </segmentedControl>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="85" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="UPd-Wf-SDn">
                                 <rect key="frame" x="0.0" y="127" width="414" height="769"/>
@@ -290,7 +293,11 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="My Places" largeTitleDisplayMode="never" id="xYX-RS-Qaw">
-                        <barButtonItem key="leftBarButtonItem" title="Item" image="AZ" id="RAS-54-5Gc"/>
+                        <barButtonItem key="leftBarButtonItem" title="Item" image="AZ" id="RAS-54-5Gc">
+                            <connections>
+                                <action selector="reversedSorting:" destination="0BO-a4-o3G" id="Q7j-Lm-sS4"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="ds7-Ru-XbI">
                             <connections>
                                 <segue destination="AAY-Xy-v0G" kind="presentation" id="lU8-ka-X2P"/>
@@ -298,6 +305,8 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="reversedSortingButton" destination="RAS-54-5Gc" id="ZXY-c5-zqB"/>
+                        <outlet property="segmentedControl" destination="ZlP-k9-yUV" id="bb1-ex-PJJ"/>
                         <outlet property="tableView" destination="UPd-Wf-SDn" id="ef0-MK-tsW"/>
                     </connections>
                 </viewController>
